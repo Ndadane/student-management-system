@@ -16,6 +16,16 @@ if($_SESSION['message'])
     </script>";
 }
 
+$host="localhost";
+$user="root";
+$password="";
+$db="schoolproject";
+
+$data=mysqli_connect($host,$user,$password,$db);
+
+$sql="SELECT * FROM teacher";
+
+$result=mysqli_query($data,$sql);
 
 
 
@@ -70,27 +80,26 @@ if($_SESSION['message'])
 
 <div class="container">
     <div class="row">
+
+        <?php
+            while($info=$result->fetch_assoc())
+            {   
+
+        ?>
+
         <div class="col-md-4">
             <div class="card">
-                <img class="teacher_img" src="teacher1.jpg" alt="Teacher 1"/>
-                <h3>Mr. John Doe</h3>
-                <p>Mathematics Teacher with 10 years of experience.</p>
+                <img class="teacher_img" src="<?php echo "{$info['image']}" ?>" alt="Teacher_image"/>
+                <h3><?php echo "{$info['name']}" ?></h3>
+                <p><?php echo "{$info['description']}" ?></p>  
+                
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card">
-                <img class="teacher_img" src="teacher2.jpg" alt="Teacher 2"/>
-                <h3>Ms. Jane Smith</h3>
-                <p>Mathematics & Science Teacher focused on excellence.</p>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card">
-                <img class="teacher_img" src="teacher3.jpg" alt="Teacher 3"/>
-                <h3>Mrs. Emily Johnson</h3>
-                <p>Science Teacher passionate about experiments..</p>
-            </div>
-        </div>
+
+        <?php
+            }   
+        ?>
+       
     </div>
 </div>
 

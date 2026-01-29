@@ -23,11 +23,11 @@
             </li>
 
             <li>
-                <a href="">Add Teacher</a>
+                <a href="admin_add_teacher.php">Add Teacher</a>
             </li>
 
             <li>
-                <a href="">View Teacher</a>
+                <a href="admin_view_teacher.php">View Teacher</a>
             </li>
 
             <li>
