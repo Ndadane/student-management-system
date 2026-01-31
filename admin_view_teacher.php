@@ -88,6 +88,7 @@ error_reporting(0);
                 <th class="table_th">About Teacher</th>
                 <th class="table_th">Image</th>
                 <th class="table_th">Delete</th>
+                <th class="table_th">Update</th>  
 
             </tr>
 
@@ -114,6 +115,16 @@ error_reporting(0);
 
                     echo"
                     <a onclick='return confirm(\"Are you sure you want to delete this teacher?\")' class='btn btn-danger' href='admin_view_teacher.php?teacher_id={$info['id']}'>Delete</a> ";
+
+                    ?>
+                </td>
+
+                <td class="table_td">
+
+                    <?php
+
+                    echo"
+                    <a class='btn btn-primary' href='admin_update_teacher.php?teacher_id={$info['id']}'>Update</a> ";
 
                     ?>
                 </td>
