@@ -1,100 +1,117 @@
 # Student Management System
 
-A small PHP + MySQL web app for managing student and teacher records, with a public admission form and a simple two-role login system (admin / student).
+A PHP/MySQL web app for managing student and teacher records, with role-based
+admin/student logins and a public admission enquiry form. Built as a personal
+project to practice full-stack development and secure coding practices.
 
-This README describes what the project **actually contains** today — not an aspirational feature list.
+## What it actually does
 
-## What's really in here
+- **Public site**: homepage listing teachers, and an admission enquiry form
+  (name, email, phone, message) that saves to the database for admin review.
+- **Admin login**: add, view, update, and delete student records; add, view,
+  update, and delete teacher records (with image upload); view submitted
+  admission enquiries; view an audit log of system activity.
+- **Student login**: view own profile.
+- **Audit log**: every create/update/delete on students and teachers, and
+  every login attempt (successful or failed), is recorded with a timestamp,
+  the acting user, and the affected record — viewable on an admin-only page.
+- **Server-side validation**: email, phone, username, name, and password
+  inputs are validated on the server (not just via HTML attributes) before
+  being written to the database.
 
-- **3 database tables**: `user` (admins + students), `teacher`, `admission`
-- **2 user roles**: `admin` and `student`, distinguished by a `usertype` column
-- **Plain PHP + mysqli** (no framework, no PDO, no REST API)
-- **Bootstrap** for styling (a mix of 3.4.1 on the login page and 5.3.8 elsewhere — not yet unified)
-- No automated tests, no CI, no email notifications, no GPA/course-enrollment system yet — despite what an earlier README draft claimed
+## Tech stack
 
-## Features
+- PHP (procedural, no framework)
+- MySQL / MariaDB (via `mysqli`, prepared statements throughout)
+- Plain HTML/CSS, no JS framework
+- Designed to run under XAMPP or any Apache+PHP+MySQL stack
 
-- Public homepage listing teachers and courses, with an admission enquiry form
-- Login for admin and student accounts
-- Admin: add/view/update/delete students, add/view/update/delete teachers, view submitted admission enquiries
-- Student: view and update their own profile (email, phone, password)
+## Setup
 
-## Security posture (recent changes)
+1. Install XAMPP (or Apache + PHP 8+ + MySQL) and place this project in your
+   `htdocs` folder.
+2. Start Apache and MySQL.
+3. Import the schema: open phpMyAdmin, create/select the `schoolproject`
+   database, and import `database/schema.sql`.
+4. Import the audit log table: also import `database/audit_log.sql`.
+5. Check `config/database.php` — defaults are `localhost` / `root` / no
+   password / `schoolproject`. Edit if your MySQL setup differs.
+6. Visit `http://localhost/student-management-system` in your browser.
+7. Log in as admin with the seeded account: username `admin`, password
+   `admin123`. **Change this password after first login** — it's a known
+   default sitting in a public schema file.
 
-The original version of this app had several serious issues that have since been fixed:
+### Optional: seed test data
 
-| Issue | Status |
-|---|---|
-| SQL injection (raw string-concatenated queries) | ✅ Fixed — all queries now use prepared statements |
-| Plaintext password storage | ✅ Fixed — passwords now hashed with `password_hash()` / `PASSWORD_DEFAULT`; legacy plaintext rows auto-upgrade on next login |
-| Pages continued executing after `header()` redirects (auth bypass risk) | ✅ Fixed — every redirect is now followed by `exit` |
-| DB credentials duplicated in every file | ✅ Fixed — centralized in `config/database.php` |
-| Uploaded teacher images kept their original (attacker-controlled) filename | ✅ Fixed — files are renamed to random hex names and validated by MIME type |
-| Raw DB error messages echoed to the browser | ✅ Fixed — errors are logged server-side instead |
-
-Still not implemented (candidates for future work):
-
-- CSRF tokens on state-changing forms
-- Login attempt throttling / rate limiting
-- Input validation beyond basic trimming (e.g. proper email/phone format checks)
-- HTTPS enforcement / secure session cookie flags
-- Roles beyond admin/student (e.g. a real "instructor" role)
-
-## Project structure
-
-```
-student-management-system/
-├── index.php                  # Public homepage + admission form
-├── login.php / login_check.php / logout.php
-├── config/
-│   ├── database.php           # Centralized DB connection
-│   └── auth.php                # require_login() / require_role() guards
-├── database/
-│   └── schema.sql             # Real schema: user, teacher, admission
-├── admin_sidebar.php / student_sidebar.php
-├── admin_css.php / student_css.php
-├── adminhome.php / studenthome.php
-├── add_student.php / view_student.php / update_student.php / delete.php
-├── admin_add_teacher.php / admin_view_teacher.php / admin_update_teacher.php
-├── admission.php               # Admin view of admission enquiries
-├── student_profile.php
-└── style.css / admin.css
-```
-
-## Getting started
-
-### Prerequisites
-- PHP 8.0+
-- MySQL 5.7+ / MariaDB
-- Apache/Nginx, or just `php -S localhost:8000`
-
-### Setup
-
-1. Clone the repo and move into it.
-2. Create the database and load the schema:
-   ```bash
-   mysql -u root -p < database/schema.sql
-   ```
-   This creates the `schoolproject` database with the `user`, `teacher`, and `admission` tables, and seeds one admin account.
-3. Check `config/database.php` — defaults are `localhost` / `root` / no password / `schoolproject`. Edit if your setup differs.
-4. Serve the app:
-   ```bash
-   php -S localhost:8000
-   ```
-5. Visit `http://localhost:8000`.
-
-### Default login
+`database/seed_students.php` inserts a configurable number of synthetic
+student records, useful for testing the app at scale:
 
 ```
-Username: admin
-Password: admin123
+php database/seed_students.php 500
 ```
-**Change this password immediately after first login** — it's a known seed value.
 
-## License
+## Security work done on this project
 
-MIT (see LICENSE).
+This project went through a real security pass — not built securely from
+day one, but audited and fixed deliberately as a learning exercise:
 
-## Author
+- **SQL injection**: all database queries use `mysqli` prepared statements
+  with bound parameters. No raw string interpolation into SQL anywhere in
+  the codebase.
+- **Password storage**: passwords are hashed with `password_hash()`
+  (bcrypt) and checked with `password_verify()`. A legacy-upgrade path
+  exists in `login_check.php` that transparently rehashes any old
+  plaintext password the first time a user logs in successfully.
+- **Authentication/authorization**: `config/auth.php` provides
+  `require_login()` and `require_role()`, called at the top of every
+  page that should be gated, with an `exit` immediately after each
+  `header()` redirect (an earlier version of this project had a bypass
+  caused by a missing `exit`).
+- **File uploads**: teacher images are validated by MIME type
+  (`mime_content_type()`, not just the file extension) and saved under
+  a randomly generated filename, preventing path traversal and
+  disguised-executable uploads.
+- **Session security**: `config/session.php` sets `HttpOnly`, `SameSite=Lax`
+  cookie flags, regenerates the session ID on login
+  (`session_regenerate_id()`), and enforces a 30-minute inactivity
+  timeout.
+- **Input validation**: `config/validation.php` validates email format,
+  phone format/length, username characters, name characters, and minimum
+  password length on the server, independent of any client-side/HTML
+  validation.
+- **Audit logging**: `config/audit.php` records every create/update/delete
+  and every login attempt to an `audit_log` table, viewable at
+  `audit_log.php`.
 
-Nhlonipho Ndadane — ICT Application Development student, Durban University of Technology.
+## Known limitations
+
+Being upfront about what this project is *not*:
+
+- **No HTTPS enforcement.** The `secure` cookie flag is currently `false`
+  in `config/session.php` because local development runs over plain HTTP.
+  This must be set to `true` before any real-world deployment, or the
+  `HttpOnly`/`SameSite` protections above are undermined.
+- **No CSRF tokens** on forms. State-changing POST requests (add/update/
+  delete) rely on the login session but don't verify a per-form token,
+  so this app is not hardened against cross-site request forgery.
+- **No rate limiting** on login attempts, so it's not resistant to
+  brute-force password guessing.
+- **No automated tests.** All verification so far has been manual.
+- **Two roles only** (`admin`, `student`) — no granular permissions
+  within a role.
+- **No pagination on student/teacher list pages** (the audit log page is
+  the only one with pagination), so very large tables may render slowly
+  in the browser.
+- **This has not been deployed or used by a real institution.** All
+  testing, including the 500-record seed data, is synthetic and done
+  locally for development/learning purposes.
+
+## Default credentials (development only)
+
+| Role  | Username | Password   |
+|-------|----------|------------|
+| Admin | admin    | admin123   |
+| Student | Student    | 1234   |
+
+Change this immediately in any environment beyond local testing — it is
+committed in plaintext in `database/schema.sql`.

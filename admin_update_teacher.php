@@ -1,5 +1,6 @@
 <?php
 
+<<<<<<< HEAD
 require 'config/session.php';
 require 'config/database.php';
 require 'config/auth.php';
@@ -54,6 +55,67 @@ $stmt = $data->prepare("SELECT * FROM teacher WHERE id = ?");
 $stmt->bind_param('i', $teacher_id);
 $stmt->execute();
 $info = $stmt->get_result()->fetch_assoc();
+=======
+session_start();
+error_reporting(0);
+
+    if(!isset($_SESSION['username']))
+    {
+        header("location:login.php");
+    }
+
+    elseif($_SESSION['usertype']=='student')
+    {
+        header("location:login.php");
+    }
+
+    $host="localhost";
+    $user="root";
+    $password="";
+    $db="schoolproject";
+
+    $data=mysqli_connect($host,$user,$password,$db);
+
+    if($_GET['teacher_id'])
+        {
+            $t_id=$_GET['teacher_id'];  
+            $sql="SELECT * FROM teacher WHERE id='$t_id' ";  
+            $result=mysqli_query($data,$sql);
+            $info=$result->fetch_assoc();
+        }
+
+    if(isset($_POST['update_teacher']))
+        {
+
+            $id=$_POST['id'];
+            $t_name=$_POST['name'];
+            $t_des=$_POST['description'];
+            $file=$_FILES['image']['name'];
+            $dst="./image/".$file;
+            $dst_db="image/".$file;
+
+            move_uploaded_file($_FILES['image']['tmp_name'],$dst);
+
+            if($file)
+                {
+                    $sql2="UPDATE teacher SET name='$t_name', description='$t_des', image='$dst_db' WHERE id='$id' ";
+                }
+
+                else
+                    {
+                        $sql2="UPDATE teacher SET name='$t_name', description='$t_des' WHERE id='$id' ";  
+                    }
+            
+            $result2=mysqli_query($data,$sql2);
+            if($result2)
+            {
+                header("location:admin_view_teacher.php");
+            }
+        }
+
+
+
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9
 
 ?>
 
@@ -100,6 +162,7 @@ $info = $stmt->get_result()->fetch_assoc();
         <center>
         <h1>Update Teacher Information</h1>
 
+<<<<<<< HEAD
         <?php if ($info): ?>
         <form class="form_deg" action="admin_update_teacher.php" method="POST" enctype="multipart/form-data"> 
 
@@ -108,40 +171,72 @@ $info = $stmt->get_result()->fetch_assoc();
             <div>
                 <label>Teacher Name</label>
                 <input type="text" name="name" value="<?php echo htmlspecialchars($info['name']); ?>">   
+=======
+        <form class="form_deg" action="admin_update_teacher.php" method="POST" enctype="multipart/form-data"> 
+
+        <input  name="id" value="<?php echo "{$info['id']}" ?>" hidden>    
+
+            <div>
+                <label>Teacher Name</label>
+                <input type="text" name="name" value="<?php echo "{$info['name']}" ?>">   
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9
             </div>
 
             <br>
 
             <div>
                 <label>About Teacher</label>
+<<<<<<< HEAD
                 <textarea name="description"><?php echo htmlspecialchars($info['description']); ?></textarea>
+=======
+                <textarea name="description" ><?php echo "{$info['description']}" ?></textarea>
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9
             </div>
 
             <br>
 
             <div>
                 <label>Teacher Old Image</label>
+<<<<<<< HEAD
                 <img src="<?php echo htmlspecialchars($info['image']); ?>" height="100px" width="100px">
+=======
+                <img src="<?php echo "{$info['image']}" ?>" height="100px" width="100px">
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9
             </div>
 
             <br>
 
             <div>
                 <label>Upload New Teacher Image</label>
+<<<<<<< HEAD
                 <input type="file" name="image" accept="image/*">
+=======
+                <input type="file" name="image" >
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9
             </div>
 
             <br>
 
             <div>
+<<<<<<< HEAD
                 <input class="btn btn-success" type="submit" name="update_teacher" value="Update">
             </div>
         </form>
         <?php else: ?>
             <p>Teacher not found.</p>
         <?php endif; ?>
+=======
+                <input class="btn btn-success" type="submit"  name="update_teacher">
+            </div>
+        </form>
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9
         </center>
     </div>
 
 </body>
 </html>
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9

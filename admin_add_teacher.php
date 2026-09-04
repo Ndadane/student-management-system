@@ -1,5 +1,6 @@
 <?php
 
+<<<<<<< HEAD
 require 'config/session.php';
 require 'config/database.php';
 require 'config/auth.php';
@@ -56,6 +57,49 @@ if (isset($_POST['add_teacher'])) {
         }
     }
 }
+=======
+session_start();
+
+    if(!isset($_SESSION['username']))
+    {
+        header("location:login.php");
+    }
+
+    elseif($_SESSION['usertype']=='student')
+    {
+        header("location:login.php");
+    }
+
+    $host="localhost";
+    $user="root";
+    $password="";
+    $db="schoolproject";
+
+    $data=mysqli_connect($host,$user,$password,$db);
+
+    if(isset($_POST['add_teacher']))
+        {
+            $t_name=$_POST['name'];
+            $t_description=$_POST['description'];
+            $file=$_FILES['image']['name'];
+
+            $dst="./image/".$file;
+            $dst_db="image/".$file;
+
+            move_uploaded_file($_FILES['image']['tmp_name'],$dst);
+
+            $sql = "INSERT INTO teacher (name,description,image) VALUES ('$t_name','$t_description','$dst_db')";
+
+            $result = mysqli_query($data, $sql);
+            if($result) 
+            {
+                echo "<script>alert('Teacher added successfully');</script>";
+            } else {
+                echo "DB Error: " . mysqli_error($data);
+            }
+        }
+    
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9
 
 ?>
 
@@ -76,6 +120,19 @@ if (isset($_POST['add_teacher'])) {
             padding-left: 30px;
             padding-right: 30px;
         }
+<<<<<<< HEAD
+=======
+       /* .div_deg input
+        {
+            width: 300px;
+            height: 30px;
+        }
+        .div_deg label
+        {
+            font-size: 20px;
+            font-weight: bold;
+        } */
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9
     </style>
    
     <?php
@@ -91,10 +148,13 @@ if (isset($_POST['add_teacher'])) {
     include 'admin_sidebar.php';
     ?>
 
+<<<<<<< HEAD
     <?php if ($alert): ?>
     <script>alert(<?php echo json_encode($alert); ?>);</script>
     <?php endif; ?>
 
+=======
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9
     <div class="content">
         <center>
         <h1>Add Teacher</h1><br><br>
@@ -102,21 +162,33 @@ if (isset($_POST['add_teacher'])) {
             <form action="#" method="POST" enctype="multipart/form-data">
                 <div>
                     <label>Teacher Name</label>
+<<<<<<< HEAD
                     <input type="text" name="name" required>
+=======
+                    <input type="text" name="name" >
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9
                 </div>
 
                 <br>
 
                 <div>
                     <label>Description</label>
+<<<<<<< HEAD
                     <textarea name="description"></textarea>
+=======
+                    <textarea name="description" ></textarea>
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9
                 </div>
 
                 <br>
 
                 <div>
                     <label>Image :</label>
+<<<<<<< HEAD
                     <input type="file" name="image" accept="image/*">
+=======
+                    <input type="file" name="image" >
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9
                 </div>
 
                 <br>
@@ -131,3 +203,7 @@ if (isset($_POST['add_teacher'])) {
 
 </body>
 </html>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9

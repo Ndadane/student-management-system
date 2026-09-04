@@ -1,5 +1,6 @@
 <?php
 
+<<<<<<< HEAD
 require 'config/session.php';
 require 'config/database.php';
 require 'config/auth.php';
@@ -63,6 +64,33 @@ $stmt = $data->prepare("SELECT * FROM user WHERE id = ?");
 $stmt->bind_param('i', $student_id);
 $stmt->execute();
 $result = $stmt->get_result();
+=======
+error_reporting(0);
+session_start();
+
+    if(!isset($_SESSION['username']))
+    {
+        header("location:login.php");
+    }
+
+    elseif($_SESSION['usertype']=='student')
+    {
+        header("location:login.php");
+    }
+
+    $host="localhost";
+    $user="root";
+    $password="";
+    $db="schoolproject";
+
+    $data=mysqli_connect($host,$user,$password,$db); 
+
+    $student_id = $_GET['student_id'];
+
+    $sql = "SELECT * FROM user WHERE id='$student_id'";
+
+    $result = mysqli_query($data, $sql);
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9
 
 ?>
 
@@ -109,6 +137,7 @@ $result = $stmt->get_result();
         <center>
             <h1>Update Student</h1>
 
+<<<<<<< HEAD
             <br><br>
 
             <?php while ($info = $result->fetch_assoc()): ?>
@@ -117,21 +146,55 @@ $result = $stmt->get_result();
                 <div>
                     <label>Username</label>
                     <input type="text" name="username" value="<?php echo htmlspecialchars($info['username']); ?>">
+=======
+            <?php
+                if(isset($_SESSION['message']))
+                {
+                    echo $_SESSION['message'];
+                }
+
+                unset($_SESSION['message']);
+            ?>
+
+            <br><br>
+
+            <?php
+                while($info=$result->fetch_assoc())
+                {
+            ?>
+        <div class="div_deg"> 
+            <form action="" method="POST">
+                <div>
+                    <label>Username</label>
+                    <input type="text" name="username" value="<?php echo "{$info['username']}"; ?>">
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9
                 </div>
 
                 <div>
                     <label>Email</label>
+<<<<<<< HEAD
                     <input type="email" name="email" value="<?php echo htmlspecialchars($info['email']); ?>">
+=======
+                    <input type="email" name="email" value="<?php echo "{$info['email']}"; ?>">
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9
                 </div>
 
                 <div>
                     <label>Phone</label>
+<<<<<<< HEAD
                     <input type="number" name="phone" value="<?php echo htmlspecialchars($info['phone']); ?>">
+=======
+                    <input type="number" name="phone" value="<?php echo "{$info['phone']}"; ?>">
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9
                 </div>
 
                 <div>
                     <label>Password</label>
+<<<<<<< HEAD
                     <input type="password" name="password" placeholder="Leave blank to keep current password">
+=======
+                    <input type="password" name="password" value="<?php echo "{$info['password']}"; ?>">
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9
                 </div>
 
                 <div>
@@ -140,10 +203,45 @@ $result = $stmt->get_result();
 
             </form>
 
+<<<<<<< HEAD
             <?php endwhile; ?>
+=======
+            <?php
+                }
+            ?>
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9
         </div> 
         </center>
    </div>
 
 </body>
 </html>
+<<<<<<< HEAD
+=======
+
+<?php
+
+    if(isset($_POST['update_student']))
+    {
+        $username = $_POST['username'];
+        $email = $_POST['email'];
+        $phone = $_POST['phone'];
+        $password = $_POST['password'];
+
+        $sql2 = "UPDATE user SET username='$username', email='$email', phone='$phone', password='$password' WHERE id='$student_id' ";
+
+        $result2 = mysqli_query($data, $sql2);
+
+        if($result2)
+        {
+            $_SESSION['message'] = "<div class='alert alert-success'>Student Updated Successfully.</div>";
+            header("location:view_student.php");
+        }
+        else
+        {
+            echo "Update Failed";
+        }
+    }
+
+?>
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9

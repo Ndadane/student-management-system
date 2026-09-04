@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 
 require 'config/session.php';
@@ -31,3 +32,35 @@ if (isset($_GET['student_id'])) {
     header('location: view_student.php');
     exit;
 }
+=======
+<?php
+
+session_start();
+
+$host="localhost";
+$user="root";
+$password="";
+$db="schoolproject";
+
+$data=mysqli_connect($host,$user,$password,$db);
+
+if($_GET['student_id'])
+    {
+        $user_id=$_GET['student_id'];
+
+        $sql="DELETE FROM user WHERE id='$user_id'";
+
+        $result=mysqli_query($data,$sql);
+
+        if($result)
+            {
+                $_SESSION['message']="Student Deleted Successfully.";
+                header("location:view_student.php");
+            }
+
+    }
+
+
+?>
+
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9

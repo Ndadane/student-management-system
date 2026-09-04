@@ -1,5 +1,6 @@
 <?php
 
+<<<<<<< HEAD
 require 'config/session.php';
 require 'config/database.php';
 require 'config/auth.php';
@@ -27,6 +28,45 @@ if (isset($_GET['teacher_id'])) {
 }
 
 $result = $data->query("SELECT * FROM teacher");
+=======
+session_start();
+error_reporting(0);
+
+    if(!isset($_SESSION['username']))
+    {
+        header("location:login.php");
+    }
+
+    elseif($_SESSION['usertype']=='student')
+    {
+        header("location:login.php");
+    }
+
+    $host="localhost";
+    $user="root";
+    $password="";
+    $db="schoolproject";
+
+    $data=mysqli_connect($host,$user,$password,$db);
+
+    $sql="SELECT * FROM teacher";
+
+    $result=mysqli_query($data,$sql);
+
+    if($_GET['teacher_id'])
+    {
+        $t_id=$_GET['teacher_id'];
+
+        $sql2="DELETE FROM teacher WHERE id='$t_id' ";
+
+        $result2=mysqli_query($data,$sql2);
+
+        if($result2)
+        {
+            header("location:admin_view_teacher.php");
+        }
+    }
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9
 
 ?>
 
@@ -82,6 +122,7 @@ $result = $data->query("SELECT * FROM teacher");
 
             </tr>
 
+<<<<<<< HEAD
             <?php while ($info = $result->fetch_assoc()): ?>
             <tr>
                 <td class="table_td">
@@ -102,6 +143,49 @@ $result = $data->query("SELECT * FROM teacher");
                 </td>
             </tr>
             <?php endwhile; ?>
+=======
+            <?php
+            while($info=$result->fetch_assoc())
+            {
+            ?>
+            <tr>
+                <td class="table_td">
+                <?php echo "{$info['name']}" ?>
+                
+                </td>
+                <td class="table_td">
+                <?php echo "{$info['description']}" ?>
+                
+                </td>
+                <td class="table_td">
+                <img src=" <?php echo "{$info['image']}" ?> " height="100" width="100"/>
+                
+                </td>
+                <td class="table_td">
+
+                    <?php
+
+                    echo"
+                    <a onclick='return confirm(\"Are you sure you want to delete this teacher?\")' class='btn btn-danger' href='admin_view_teacher.php?teacher_id={$info['id']}'>Delete</a> ";
+
+                    ?>
+                </td>
+
+                <td class="table_td">
+
+                    <?php
+
+                    echo"
+                    <a class='btn btn-primary' href='admin_update_teacher.php?teacher_id={$info['id']}'>Update</a> ";
+
+                    ?>
+                </td>
+            </tr>
+
+            <?php
+            }
+            ?>
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9
             
         </table>
         </center>
@@ -109,3 +193,7 @@ $result = $data->query("SELECT * FROM teacher");
 
 </body>
 </html>
+<<<<<<< HEAD
+=======
+
+>>>>>>> 239de901e16da1817680c17ebf21a25d6c958bc9
